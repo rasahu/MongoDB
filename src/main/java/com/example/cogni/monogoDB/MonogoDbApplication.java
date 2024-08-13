@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MonogoDbApplication {
 
 	public static void main(String[] args) {
-
 		SpringApplication.run(MonogoDbApplication.class, args);
 	}
 
