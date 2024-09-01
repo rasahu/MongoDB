@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class OlympicMedals {
     private String countryCode;
     private String country;
+    private int rank;
     private int gold;
     private int silver;
     private int bronze;
