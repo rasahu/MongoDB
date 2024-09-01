@@ -15,11 +15,11 @@ import java.util.List;
 @RequestMapping("/students")
 public class StudentController {
 
-@Autowired
-StudentRepository studentRepository;
+    @Autowired
+    StudentRepository studentRepository;
 
     @GetMapping("/getAllStudent")
-    public ResponseEntity<List<StudentDTO>> getAllStudent(){
+    public ResponseEntity<List<StudentDTO>> getAllStudent() {
         return new ResponseEntity<>(studentRepository.findAll(), HttpStatus.OK);
     }
 }

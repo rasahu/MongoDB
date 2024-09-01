@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestRestContoller {
     @GetMapping("/sayHelllo")
     public ResponseEntity<EsignResponse> completeTask() {
-        EsignResponse esignResponse=new EsignResponse();
+        EsignResponse esignResponse = new EsignResponse();
         esignResponse.setMessage("from second Services called By feign Client");
         esignResponse.setStatusCode(404);
         esignResponse.setPackageId("PackageId");

@@ -17,5 +17,6 @@ public class OlympicMedals {
     private int gold;
     private int silver;
     private int bronze;
+    private int totalMedal;
 
 }

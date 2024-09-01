@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GeneralResponse {
-	private int statusCode;
-	private String message;
+    private int statusCode;
+    private String message;
 
 }
