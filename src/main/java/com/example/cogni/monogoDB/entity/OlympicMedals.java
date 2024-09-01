@@ -2,6 +2,7 @@ package com.example.cogni.monogoDB.entity;
 
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection ="OlympicMedal")
@@ -11,6 +12,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @EqualsAndHashCode
 @ToString
 public class OlympicMedals {
+
+    @Id
+    private String id;
     private String countryCode;
     private String country;
     private int rank;
