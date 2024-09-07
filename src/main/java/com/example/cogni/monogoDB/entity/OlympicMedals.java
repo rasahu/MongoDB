@@ -15,6 +15,7 @@ public class OlympicMedals {
 
     @Id
     private String id;
+
     private String countryCode;
     private String country;
     private int rank;
