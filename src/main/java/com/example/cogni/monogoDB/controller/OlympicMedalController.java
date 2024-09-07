@@ -4,6 +4,7 @@ package com.example.cogni.monogoDB.controller;
 import com.example.cogni.monogoDB.entity.OlympicMedals;
 import com.example.cogni.monogoDB.model.GeneralResponse;
 import com.example.cogni.monogoDB.services.OlympicMedalServices;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class OlympicMedalController {
     }
 
     @PostMapping("/saveMedalTally")
-    public ResponseEntity<GeneralResponse> saveMedal(@RequestBody OlympicMedals olympicMedals) {
+    public ResponseEntity<GeneralResponse> saveMedal(@Valid @RequestBody OlympicMedals olympicMedals) {
         GeneralResponse response = new GeneralResponse();
         olympicMedalServices.saveMedalTally(olympicMedals);
         response.setStatusCode(HttpStatus.OK.value());

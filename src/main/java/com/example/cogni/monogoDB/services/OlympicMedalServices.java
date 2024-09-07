@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.Comparator;
 import java.util.List;
@@ -31,13 +32,13 @@ public class OlympicMedalServices {
                         .thenComparing(Comparator.comparingInt(OlympicMedals::getSilver))
                         .thenComparing(Comparator.comparingInt(OlympicMedals::getBronze)))
                          .collect(Collectors.toList()).reversed();
-        kafkaTemplate.send("rasahu-topic","HI Callig freo Producre");
+            kafkaTemplate.send("rasahu-topic","HI Callig freo Producre");
 /*        .stream().toList().stream().map(medal->medal.setTotalMedal(
                 medal.getGold()+medal.getSilver()+medal.getBronze())).collect(Collectors.toList());*/
         return medalsList;
     }
 
-    public GeneralResponse saveMedalTally(OlympicMedals OlympicMedals) {
+    public GeneralResponse saveMedalTally(@Validated OlympicMedals OlympicMedals) {
         GeneralResponse response=new GeneralResponse();
         olympicMedalRepository.save(OlympicMedals);
         response.setStatusCode(HttpStatus.OK.value());
