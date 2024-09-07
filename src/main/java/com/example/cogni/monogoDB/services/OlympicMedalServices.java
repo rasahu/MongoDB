@@ -10,10 +10,14 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,18 +28,23 @@ public class OlympicMedalServices {
 
     @Autowired
     private KafkaTemplate kafkaTemplate;
+    Integer index=0;
 
     public List<OlympicMedals> getMedalTally() {
         List<OlympicMedals> medalsList = olympicMedalRepository.findAll().stream().unordered().toList();
-
         medalsList = medalsList.stream().sorted(Comparator.comparing(OlympicMedals::getGold)
                         .thenComparing(Comparator.comparingInt(OlympicMedals::getSilver))
                         .thenComparing(Comparator.comparingInt(OlympicMedals::getBronze)))
                          .collect(Collectors.toList()).reversed();
-            kafkaTemplate.send("rasahu-topic","HI Callig freo Producre");
+        medalsList.forEach((medal)-> {
+                    medal.setRank(++index);
+                    medal.setTotalMedal(medal.getGold() + medal.getSilver()+medal.getBronze());
+                } );
+            kafkaTemplate.send("rasahu-topic","Hi this is Rakesh  Calling  from  producer application.");
 /*        .stream().toList().stream().map(medal->medal.setTotalMedal(
                 medal.getGold()+medal.getSilver()+medal.getBronze())).collect(Collectors.toList());*/
         return medalsList;
+
     }
 
     public GeneralResponse saveMedalTally(@Validated OlympicMedals OlympicMedals) {
