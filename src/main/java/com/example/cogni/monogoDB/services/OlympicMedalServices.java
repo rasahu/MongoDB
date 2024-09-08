@@ -32,7 +32,7 @@ public class OlympicMedalServices {
 
     public List<OlympicMedals> getMedalTally() {
         List<OlympicMedals> medalsList = olympicMedalRepository.findAll().stream().unordered().toList();
-        medalsList = medalsList.stream().sorted(Comparator.comparing(OlympicMedals::getGold)
+        medalsList = medalsList.stream().sorted(Comparator.comparingInt(OlympicMedals::getGold)
                         .thenComparing(Comparator.comparingInt(OlympicMedals::getSilver))
                         .thenComparing(Comparator.comparingInt(OlympicMedals::getBronze)))
                          .collect(Collectors.toList()).reversed();
@@ -40,7 +40,8 @@ public class OlympicMedalServices {
                     medal.setRank(++index);
                     medal.setTotalMedal(medal.getGold() + medal.getSilver()+medal.getBronze());
                 } );
-            kafkaTemplate.send("rasahu-topic","Hi this is Rakesh  Calling  from  producer application.");
+        kafkaTemplate.send("rasahu-topic","Hi this is Rakesh  Calling  from  producer application.");
+        kafkaTemplate.send("rasahu-topic","getMedlTally","Hi this is Rakesh  Calling  from  producer application.");
 /*        .stream().toList().stream().map(medal->medal.setTotalMedal(
                 medal.getGold()+medal.getSilver()+medal.getBronze())).collect(Collectors.toList());*/
         return medalsList;
