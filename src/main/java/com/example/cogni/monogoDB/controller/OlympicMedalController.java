@@ -36,8 +36,8 @@ public class OlympicMedalController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/updateMedalTally" + ID)
-    public ResponseEntity<GeneralResponse> updateMadel(@Validated @RequestBody OlympicMedals olympicMedals) {
-        return new ResponseEntity<>(olympicMedalServices.saveMedalTally(olympicMedals), HttpStatus.OK);
+    @GetMapping("/updateMedalTally")
+    public ResponseEntity<GeneralResponse> updateMadel() {
+        return new ResponseEntity<>(olympicMedalServices.updateMedalTally(), HttpStatus.OK);
     }
 }
