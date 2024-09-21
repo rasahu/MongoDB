@@ -10,14 +10,12 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -29,20 +27,21 @@ public class OlympicMedalServices {
     private OlympicMedalRepository olympicMedalRepository;
     @Autowired
     private KafkaTemplate kafkaTemplate;
+
+    @Autowired
+    private RedisServices redisServices;
+
     Integer index = 0;
 
     public List<OlympicMedals> getMedalTally() {
         List<OlympicMedals> medalsList = olympicMedalRepository.findAll().stream().unordered().toList();
-        medalsList = medalsList.stream().sorted(Comparator.comparingInt(OlympicMedals::getGold)
-                        .thenComparing(Comparator.comparingInt(OlympicMedals::getSilver))
-                        .thenComparing(Comparator.comparingInt(OlympicMedals::getBronze)))
-                .collect(Collectors.toList()).reversed();
+        medalsList = medalsList.stream().sorted(Comparator.comparingInt(OlympicMedals::getGold).thenComparing(Comparator.comparingInt(OlympicMedals::getSilver)).thenComparing(Comparator.comparingInt(OlympicMedals::getBronze))).collect(Collectors.toList()).reversed();
         medalsList.forEach((medal) -> {
             medal.setRank(++index);
             medal.setTotalMedal(medal.getGold() + medal.getSilver() + medal.getBronze());
         });
-        kafkaTemplate.send("rasahu-topic", "Hi this is Rakesh  Calling  from  producer application.");
-        kafkaTemplate.send("rasahu-topic", "getMedlTally", "Hi this is Rakesh  Calling  from  producer application.");
+      /*  kafkaTemplate.send("rasahu-topic", "Hi this is Rakesh  Calling  from  producer application.");
+        kafkaTemplate.send("rasahu-topic", "getMedlTally", "Hi this is Rakesh  Calling  from  producer application.");*/
 /*        .stream().toList().stream().map(medal->medal.setTotalMedal(
                 medal.getGold()+medal.getSilver()+medal.getBronze())).collect(Collectors.toList());*/
         return medalsList;
@@ -57,6 +56,18 @@ public class OlympicMedalServices {
         return response;
     }
 
+    public OlympicMedals getMedalInfoByCountryCode(String countyCode) {
+        Optional<OlympicMedals> olympicMedalsOptional = Optional.ofNullable(redisServices.get("Medal List  for Country " + countyCode, OlympicMedals.class));
+        if (olympicMedalsOptional.isPresent()) {
+            return olympicMedalsOptional.get();
+        } else {
+            Query query = new Query().addCriteria(Criteria.where("countryCode").is(countyCode));
+            OlympicMedals olympicMedals = (OlympicMedals) mongoTemplate.findOne(query, OlympicMedals.class);
+            redisServices.set("Medal List  for Country " + countyCode, olympicMedals, 1000l);
+            return olympicMedals;
+        }
+    }
+
 
     public GeneralResponse updateMedalTally() {
         GeneralResponse response = new GeneralResponse();
@@ -68,5 +79,8 @@ public class OlympicMedalServices {
         return response;
     }
 
-
+    @Scheduled(fixedDelay = 5000) // Update cache every 5 seconds
+    public void updateCacheScheduled() {
+        System.out.println("Cache updated ::: " + index + String.valueOf(1));
+    }
 }

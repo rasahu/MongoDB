@@ -9,8 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-@WebMvcTest(controllers = OlympicMedalControllerTest.class)
-@SpringBootTest
+@WebMvcTest(TestRestContoller.class)
 public class OlympicMedalControllerTest {
 
     @Autowired
@@ -18,8 +17,9 @@ public class OlympicMedalControllerTest {
 
     @Test
     public void testHelloWorld() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/hello"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/first/hello"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Hello World!"));
+
     }
 }

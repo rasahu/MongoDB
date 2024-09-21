@@ -15,9 +15,15 @@ public class TestRestContoller {
     public ResponseEntity<EsignResponse> completeTask() {
         EsignResponse esignResponse = new EsignResponse();
         esignResponse.setMessage("from second Services called By feign Client");
-        esignResponse.setStatusCode(404);
+        esignResponse.setStatusCode(200);
         esignResponse.setPackageId("PackageId");
         return new ResponseEntity(esignResponse, HttpStatus.OK);
     }
-
+    @GetMapping("/hello")
+    public String helloTask() {
+        System.out.println("");
+        System.out.println("HU ");
+        System.out.println();
+        return "Hello World!";
+    }
 }
