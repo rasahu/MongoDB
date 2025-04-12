@@ -12,8 +12,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode
 @ToString
-
-
 public class StudentDTO {
     private String id;
     private String firstName;

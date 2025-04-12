@@ -17,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +36,11 @@ public class OlympicMedalServices {
 
     public List<OlympicMedals> getMedalTally() {
         List<OlympicMedals> medalsList = olympicMedalRepository.findAll().stream().unordered().toList();
-        medalsList = medalsList.stream().sorted(Comparator.comparingInt(OlympicMedals::getGold).thenComparing(Comparator.comparingInt(OlympicMedals::getSilver)).thenComparing(Comparator.comparingInt(OlympicMedals::getBronze))).collect(Collectors.toList()).reversed();
+        medalsList = medalsList.stream().
+                sorted(Comparator.comparingInt(OlympicMedals::getGold).
+                        thenComparing(Comparator.comparingInt(OlympicMedals::getSilver)).
+                        thenComparing(Comparator.comparingInt(OlympicMedals::getBronze)))
+                        .collect(Collectors.toList());
         medalsList.forEach((medal) -> {
             medal.setRank(++index);
             medal.setTotalMedal(medal.getGold() + medal.getSilver() + medal.getBronze());
@@ -43,7 +48,25 @@ public class OlympicMedalServices {
       /*  kafkaTemplate.send("rasahu-topic", "Hi this is Rakesh  Calling  from  producer application.");
         kafkaTemplate.send("rasahu-topic", "getMedlTally", "Hi this is Rakesh  Calling  from  producer application.");*/
 /*        .stream().toList().stream().map(medal->medal.setTotalMedal(
+<<<<<<<<<<<<<<  ✨ Codeium Command ⭐ >>>>>>>>>>>>>>>>
+
+<<<<<<<  68b2503b-8a0d-44eb-a783-a0d36caf5855  >>>>>>>
                 medal.getGold()+medal.getSilver()+medal.getBronze())).collect(Collectors.toList());*/
+
+       // Map<String, OlympicMedals> collect1 = medalsList.stream().collect(Collectors.toMap(OlympicMedals::getId, Function.identity()));
+
+       // Map<String, String> collect = medalsList.stream().collect(Collectors.toMap(OlympicMedals::getId, OlympicMedals::getCountry));
+
+       // System.out.println(collect.get(1));
+
+
+        Map<String, OlympicMedals> medalMap = medalsList.stream()
+                .collect(Collectors.toMap(OlympicMedals::getId, Function.identity()));
+        medalMap.forEach((key, value) -> {
+            System.out.println(value.getCountry() + " " + value.getGold() + " " + value.getSilver() + " " + value.getBronze());
+            kafkaTemplate.send("rasahu-topic","Sending Medal info for Country "+value.getCountry());
+        });
+
         return medalsList;
 
     }
@@ -63,12 +86,10 @@ public class OlympicMedalServices {
         } else {
             Query query = new Query().addCriteria(Criteria.where("countryCode").is(countyCode));
             OlympicMedals olympicMedals = (OlympicMedals) mongoTemplate.findOne(query, OlympicMedals.class);
-            redisServices.set("Medal List  for Country " + countyCode, olympicMedals, 1000l);
+            redisServices.set("Medal List  for Country " + countyCode, olympicMedals, 120L);
             return olympicMedals;
         }
     }
-
-
     public GeneralResponse updateMedalTally() {
         GeneralResponse response = new GeneralResponse();
         Query query = new Query().addCriteria(Criteria.where("country").is("South Korea"));

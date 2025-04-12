@@ -5,6 +5,7 @@ import com.example.cogni.monogoDB.entity.OlympicMedals;
 import com.example.cogni.monogoDB.model.GeneralResponse;
 import com.example.cogni.monogoDB.services.OlympicMedalServices;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,11 +45,12 @@ public class OlympicMedalController {
     }
 
     @GetMapping("/getMedalInfoByCountryCode")
-    public ResponseEntity<Object> getMedalInfoByCountryCode(@Valid String countryCode) {
-        Optional<OlympicMedals> olympicMedal = Optional.ofNullable(olympicMedalServices.getMedalInfoByCountryCode(countryCode));
-        if (olympicMedal.isPresent())
-            return new ResponseEntity<>(olympicMedal, HttpStatus.OK);
+    public ResponseEntity<Object> getMedalInfoByCountryCode(@NotBlank String countryCode) {
+        Optional<OlympicMedals> olympicMedalList = Optional.ofNullable(olympicMedalServices.getMedalInfoByCountryCode(countryCode));
+        if (olympicMedalList.isPresent())
+            return new ResponseEntity<>(olympicMedalList, HttpStatus.OK);
         else
             return new ResponseEntity<>("No Medal Found for this County", HttpStatus.OK);
     }
+
 }

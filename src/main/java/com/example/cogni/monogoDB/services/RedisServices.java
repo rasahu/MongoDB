@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -31,9 +32,11 @@ public class RedisServices {
         }
     }
 
-    public void set(@NotNull String key, Object obj, Long timeToLive) {
+    public void set(@NotNull String key, Object object, Long timeToLive) {
         try {
-            redisTemplate.opsForValue().set(key, obj.toString(), timeToLive);
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonString=objectMapper.writeValueAsString(object);
+            redisTemplate.opsForValue().set(key, jsonString, timeToLive, TimeUnit.SECONDS);
         } catch (Exception e) {
             log.error(e.getMessage());
         }
@@ -47,4 +50,12 @@ public class RedisServices {
         }
     }
 
+    public void update(@NotNull String key, Object obj, Long timeToLive) {
+        try {
+            redisTemplate.opsForValue().getAndDelete(key);
+            redisTemplate.opsForValue().set(key, obj.toString(), timeToLive,TimeUnit.MILLISECONDS);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+    }
 }

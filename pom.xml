@@ -74,7 +74,11 @@
             <version>17.0.0</version>
             <scope>compile</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>1.11.926</version>
+        </dependency>
     </dependencies>
 
     <build>

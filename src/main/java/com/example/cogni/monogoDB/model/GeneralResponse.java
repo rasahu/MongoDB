@@ -1,13 +1,14 @@
 package com.example.cogni.monogoDB.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Setter
+@Getter
+@ToString
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class GeneralResponse {
+public class GeneralResponse  {
 	private int statusCode;
 	private String message;
 
